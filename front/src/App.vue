@@ -1,35 +1,39 @@
 <template>
-<FormTask />
-  <Task  msg="Welcome to Your Vue.js App"/>
-  <Task  msg="Welcome to Your Vue.js App"/>
-  <Task  msg="Welcome to Your Vue.js App"/>
+  <Header></Header>
+  <ToDos ></ToDos>
 
 </template>
 
 <script>
-import Task from './components/Task.vue'
-import FormTask from './components/FormTask.vue'
-
+import Header from './components/Header.vue'
+import ToDos from './components/ToDos.vue';
 export default {
   name: 'App',
   components: {
-    Task,
-    FormTask
+    Header,
+    ToDos
+},
+data() {
+ return {
+
+ };
 }
 }
 </script>
 
 <style>
-body {
-    background-color: whitesmoke;
+* {
+  box-sizing: border-box;
+}
 
+html {
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  margin: 0;
 }
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+
 }
 </style>

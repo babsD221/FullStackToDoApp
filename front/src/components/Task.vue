@@ -1,31 +1,32 @@
 <template>
 
-    <div class=" w-2/5 h-20 bg-white m-auto rounded-3xl justify-center flex flex-row mb-10 ">
-        <h3>{{ task.details }}</h3>
-    </div>
-        </template>
+    <li class="m-auto">
+      <base-card>
+        <header class="flex justify-between items-center flex-row">
+        <h3 class="text-xl my-2 mx-0 ">{{ description }}</h3>
+        <div>
+        <base-button  mode="flat">
+        <done-icon> </done-icon>
+        </base-button>
+
+        <base-button  @click="removeTask(id)" mode="flat">
+        <delete-icon class="text-red-700">  </delete-icon>
+        </base-button>
+        </div>
+
+        </header>
+
+      </base-card>
+    </li>
+</template>
 
 
 <script>
-import CancelIcon from '/home/babs/Projects/FullStackToDoApp/front/src/assets/cancel.svg'
 export default {
-  data() {
-    return {
-      taskIsDone: false,
-      task: {
-        details: "Birane grandira dans un bon environnement",
-        date: "",
-      },
-      components: {
-          CancelIcon,
-      }
-    };
-  },
-
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
+    inject:['removeTask'],
+    name: "MyTask",
+    props: ["id","description"],
+    components: {  }
 }
 </script>
 
@@ -40,5 +41,21 @@ export default {
 }
 .cancel-icon {
     color:red;
+}
+
+.backImg {
+  background-image: url("/home/babs/Projects/FullStackToDoApp/front/src/assets/done_all_FILL0_wght400_GRAD0_opsz48.png");
+  height: 50px;
+}
+.DeleteButton {
+  background-image:
+  rgba(255, 99, 71),
+   url("/home/babs/Projects/FullStackToDoApp/front/src/assets/delete_FILL0_wght400_GRAD0_opsz48.png");
+  height: 50px;
+  filter: sepia(100%);
+  background-color: red;
+}
+.deee {
+  color:red;
 }
 </style>

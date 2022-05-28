@@ -7,5 +7,29 @@ library.add(far);
 
 import { createApp } from 'vue'
 import App from './App.vue'
+import BaseCard from './components/BaseCard'
+import BaseButton from './components/BaseButton'
 
-createApp(App).mount('#app')
+import { createStore} from 'vuex';
+import DeleteIcon from 'vue-material-design-icons/Delete.vue';
+import DoneIcon from 'vue-material-design-icons/CheckOutline.vue';
+
+
+
+const store = createStore({
+    state() {
+        return {
+            tasks: []
+        }
+    }
+});
+const app = createApp(App)
+app.component('base-card', BaseCard)
+app.component('base-button',BaseButton)
+
+app.use(store)
+app.component('delete-icon', DeleteIcon);
+app.component('done-icon', DoneIcon);
+
+
+app.mount('#app')
