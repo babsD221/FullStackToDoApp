@@ -1,5 +1,5 @@
 <template>
-  <AddTask  @add-task="addTask"></AddTask>
+  <AddTask></AddTask>
   <base-card>
     <base-button
       @click="setSelectedTab('StoredTasks')"

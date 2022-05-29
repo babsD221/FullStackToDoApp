@@ -9,7 +9,7 @@
         <done-icon> </done-icon>
         </base-button>
 
-        <base-button  @click="removeTask(id)" mode="flat">
+        <base-button  @click="this.$store.commit('tasksList/removeTask',id)" mode="flat">
         <delete-icon class="text-red-700">  </delete-icon>
         </base-button>
         </div>

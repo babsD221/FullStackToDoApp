@@ -1,6 +1,6 @@
 <template>
     <base-card>
-        <form @submit.prevent="submitTask()" action="">
+        <form @submit.prevent="this.$store.commit('tasksList/addTask',this.$refs.taskInput.value)" action="">
             <div class=" flex flex-row justify-between items-center  ">
                 <label class="font-bold block mb-2 text-xl" for="description" >Description</label>
                 <input class="block w-2/3" id="description" name="description" ref="taskInput" type="text">
@@ -14,14 +14,7 @@
 <script>
 /* import axios from 'axios'
  */    export default {
-        inject: ["tasks","getTasks"],
 
-        methods: {
-            submitTask() {
-                const enteredTask = this.$refs.taskInput.value;
-                this.$emit("add-task",enteredTask)
-            }
-        }
     }
 </script>
 

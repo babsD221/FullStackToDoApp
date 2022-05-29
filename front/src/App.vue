@@ -1,17 +1,18 @@
 <template>
   <Header></Header>
-  <ToDos ></ToDos>
-
+<!--   <UserAuth></UserAuth>
+ -->  <router-view></router-view>
+<!--   <ToDos ></ToDos>
+ -->
 </template>
 
 <script>
 import Header from './components/Header.vue'
-import ToDos from './components/ToDos.vue';
-export default {
+/* import UserAuth from './components/UserAuth.vue';
+ */export default {
   name: 'App',
   components: {
-    Header,
-    ToDos
+    Header
 },
 data() {
  return {
