@@ -3,13 +3,13 @@
     <li class="m-auto">
       <base-card>
         <header class="flex justify-between items-center flex-row">
-        <h3 class="text-xl my-2 mx-0 ">{{ description }}</h3>
+        <h3 class="text-xl my-2 mx-0  ">{{ description }}</h3>
         <div>
-        <base-button  mode="flat">
+        <base-button @click="completeTask(id,this.$store.getters['authentication/token'])"  mode="flat">
         <done-icon> </done-icon>
         </base-button>
 
-        <base-button  @click="this.$store.commit('tasksList/removeTask',id)" mode="flat">
+        <base-button  @click="removeTask(id,this.$store.getters['authentication/userId'],this.$store.getters['authentication/token'])" mode="flat">
         <delete-icon class="text-red-700">  </delete-icon>
         </base-button>
         </div>
@@ -23,10 +23,34 @@
 
 <script>
 export default {
-    inject:['removeTask'],
     name: "MyTask",
     props: ["id","description"],
-    components: {  }
+        computed :{
+      jwt: function() {
+        return this.$store.getters['auth/jwt'];
+      }
+    },
+    methods: {
+      removeTask(taskId,user_id,jwt) {
+        const payload = {
+          'id': taskId,
+          'user_id':user_id,
+          'token': jwt
+        }
+        console.log(payload)
+        this.$store.commit('tasksList/removeTask',payload);
+      },
+       completeTask(taskId,jwt) {
+        const payload = {
+          'id': taskId,
+          'token': jwt
+        }
+        this.$store.commit('tasksList/completeTask',payload)
+      }
+    },
+   
+
+    
 }
 </script>
 

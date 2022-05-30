@@ -2,27 +2,28 @@
   <AddTask></AddTask>
   <base-card>
     <base-button
-      @click="setSelectedTab('StoredTasks')"
+      @click="showStoredTasks()"
       :mode="addTaskButtonMode"
       >All</base-button
     >
-    <base-button @click="setSelectedTab('Todo')">Todo</base-button>
-    <base-button @click="setSelectedTab('Done')">Done</base-button>
+    <base-button  @click="setSelectedTab('ActiveTasks')">Active</base-button>
+    <base-button  @click="setSelectedTab('Completed')">Done</base-button>
   </base-card>
   <component @toParent="childStoredTasks" :is="selectedTab"></component>
 </template>
 
 <script>
-import StoredTasks from './StoredTasks.vue'
+import StoredTasks from './StoredTasks.vue';
 import AddTask from './AddTask.vue';
-import axios from 'axios'
-
+import Completed from './Completed.vue';
+import ActiveTasks from './ActiveTasks.vue';
 export default {
     components: {
     StoredTasks,
-    AddTask
+    AddTask,
+    Completed,
+    ActiveTasks
     },
-    inject: ['getTasks'],
     data() {
         return {
             selectedTab: 'StoredTasks',
@@ -36,38 +37,30 @@ export default {
             removeTask: this.removeTask
         };
     },
-/*     created() {
-        this.getTasks();
-        console.log(this.tasks)
 
-    }, */
     methods: {
         setSelectedTab(tab) {
             this.selectedTab = tab;
         },
-        addTask(taskDescription) {
-
-            const backPath = "http://127.0.0.1:5050/create";
-
-            const newTask = {
-                description: taskDescription
-            };
-            const headers = {
-                'Content-type':'application/json',
-                'Accept': 'application/json',
-                
-            }
-            axios.post(backPath,newTask,{
-                headers:headers
-            });
-            this.$store.state.tasks.unshift(newTask);
-            },
+        getTasks() {
+            console.log(this.$store.getters['taskList/tasks'])
+            this.$store.dispatch('getTasks');
+        },
+        showStoredTasks() {
+            this.setSelectedTab('StoredTasks');
+            this.getTasks();
+        },
+        showCompletedTasks() {
+            this.setSelectedTab('Completed');
+/*             this.$store.dispatch('getCompletedTasks');
+ */        }
 
         },
         computed: {
             addTaskButtonMode() {
                 return this.selectedTab ==='StoredTasks' ? null : 'flat'
             },
+
     }
 }
 </script>

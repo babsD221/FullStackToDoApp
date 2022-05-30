@@ -1,6 +1,6 @@
 <template>
     <base-card>
-        <form @submit.prevent="this.$store.commit('tasksList/addTask',this.$refs.taskInput.value)" action="">
+        <form @submit.prevent="submitTask(this.$refs.taskInput.value,this.$store.getters['authentication/token'])" action="">
             <div class=" flex flex-row justify-between items-center  ">
                 <label class="font-bold block mb-2 text-xl" for="description" >Description</label>
                 <input class="block w-2/3" id="description" name="description" ref="taskInput" type="text">
@@ -12,10 +12,20 @@
 </template>
 
 <script>
-/* import axios from 'axios'
- */    export default {
-
+export default {
+    methods: {
+        submitTask(description,jwt) {
+            console.log(jwt);
+            const payload = {
+                'description': description,
+                'completed': false,
+                'token': jwt
+            }
+            this.$store.dispatch('tasksList/addTask',payload);
+        }
     }
+
+}
 </script>
 
 <style scoped>

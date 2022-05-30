@@ -10,8 +10,8 @@
         </base-card>
         <p v-if="!formIsValid"> Please enter a valid email and password</p>
         <base-card>
-                <base-button>{{submitButtonCaption}}</base-button>
-        <base-button @click="SwithAuthMode" mode="flat">{{SwitchModeButtonCaption}}</base-button>
+        <base-button type="submit">{{submitButtonCaption}}</base-button>
+        <base-button type="button" @click="SwithAuthMode" mode="flat">{{SwitchModeButtonCaption}}</base-button>
         </base-card>
 
     </form>
@@ -66,10 +66,10 @@ export default {
             try {
                 if(this.mode == 'signup') {
 
-                    this.$store.dispatch("auth/signup",payload)
+                    this.$store.dispatch("authentication/signup",payload)
                 }
             else {
-                    this.$store.dispatch("auth/authenticate",payload);
+                    this.$store.dispatch("authentication/authenticate",payload);
                 }
                 this.$router.replace('/tasks');
             }

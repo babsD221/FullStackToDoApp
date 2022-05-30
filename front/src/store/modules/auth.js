@@ -17,14 +17,12 @@ export default {
             userId: null,
             token: null,
             user: {},
-            jwt: ''
+            jwt: '',
         };
 
     },
     actions: {
-        login() {
 
-        },
         signup(context, payload) {
             console.log("In auth");
             let url = "http://127.0.0.1:5050/register";
@@ -44,7 +42,7 @@ export default {
             });
             context.commit('setUserData',{payload})
         },
-        authenticate(context, payload) {
+        async authenticate(context, payload) {
 
             let url = "http://127.0.0.1:5050/login";
             const headers = {
@@ -53,22 +51,44 @@ export default {
                 
             };
             const data = JSON.stringify(payload);
+            await axios.post(url,data,{
+                headers:headers
+            }).then(response => {
+                console.log(response);
+                context.commit('setJwtToken',response.data['token']);
+                context.commit('setUserData',response.data['id']);
+                        });
+        },
+        logout(context) {
+            let url = "http://127.0.0.1:5050/logout";
+            const headers = {
+                'Content-type':'application/json',
+                'Accept': 'application/json',    
+            };
+            let data  = {};
             axios.post(url,data,{
                 headers:headers
-            }).then(response => context.commit('setJwtToken',{jwt: response.data}));
+            }).then(response =>{
+                console.log(response.data['token']);
+                context.commit('setJwtToken',response.data['token']);
+
+        });
+            
         }
         
     },
     mutations: {
         setUserData(state,payload) {
-            state.token = payload.token;
-            state.userId = payload.userId;
+            state.userId = payload;
+            console.log(state.userId)
         },
         setJwtToken (state, payload) {
-            console.log('setJwtToken payload = ', payload)
-            localStorage.token = payload.jwt.token
-            state.jwt = payload.jwt
-        }
+            localStorage.token = payload
+            state.token = payload;
+            console.log(payload);
+
+        },
+
     },
     getters: {
         userId(state) {
@@ -78,7 +98,10 @@ export default {
             return state.token;
           },
           isAuthenticated(state) {
-            return isValidJwt(state.jwt.token)
+            return isValidJwt(state.token)
+          },
+          jwt(state) {
+              return state.jwt;
           }
     }
 }

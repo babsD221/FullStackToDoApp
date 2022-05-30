@@ -3,49 +3,94 @@ export default {
     namespaced:true,
     state() {
         return {
-            tasks:[]
+            tasks:[],
+            completedTasks:[]
         }
     },
     getters: {
         tasks(state) {
             return state.tasks;
+        },
+        completedTasks(state) {
+            return state.completeTasks;
         }
     },
     mutations: {
-        getTasks(state) {
-            console.log("In get tasks");
-            const backPath = "http://127.0.0.1:5050/";
-            axios.get(backPath)
-            .then(res => {
-                state.tasks = res.data;
-                console.log(state.tasks);
-            })
-            .catch((err) => {
-                console.error(err)
-            })
+        pushToTasks(state,newTask) {
+            state.tasks.unshift(newTask);
         },
-        removeTask(state,taskId) {
-            const taskIndex = state.tasks.findIndex(task => task.id === taskId);
+        setTasks(state,data){
+            state.tasks = data;
+        },
+        setCompletedTasks(state,data){
+            state.completeTasks = data;
+        },
+        removeAllTasks(state) {
+            state.tasks =[]
+        },
+        
+        removeTask(state,payload) {
+            const path = "http://127.0.0.1:5050/remove";
+            const taskIndex = state.tasks.findIndex(task => task.id === payload['id']);
+            console.log(payload['id']);
+            console.log(taskIndex);
             state.tasks.splice(taskIndex, 1);
-        },
-        addTask(state,taskDescription) {
 
-            const backPath = "http://127.0.0.1:5050/create";
-
-            const newTask = {
-                description: taskDescription
-            };
             const headers = {
-                'Content-type':'Authorization,application/json',
-                'Accept': 'Authorization,application/json',
+                Authorization: `Bearer: ${payload['token']}`,
+                "Content-Type":"application/json"
                 
             }
+            const data = {
+                'id': payload['id'],
+                'user_id':payload['user_id']
+            };
+            axios.post(path,data,{
+                headers:headers
+            });
+            
+        },
+
+        completeTask(state,payload) {
+            const taskIndex = state.tasks.findIndex(task => task.id === payload['id']);
+            state.tasks[taskIndex] = {
+                description: state.tasks[taskIndex].description,
+                completed:true,
+                id:payload['id']
+            }
+            const path = "http://127.0.0.1:5050/complete";
+            const headers = {
+                Authorization: `Bearer: ${payload['token']}`,
+                "Content-Type":"application/json"
+                
+            }
+            const data = {
+                id: payload['id']
+            };
+            axios.post(path,data,{
+                headers:headers
+            });
+        }
+        
+    },
+    actions: {
+        addTask(context,payload) {
+
+            const backPath = "http://127.0.0.1:5050/create";
+            const newTask = {
+                description: payload['description'],
+                completed:payload['completed']
+            };
+            const headers = {
+                Authorization: `Bearer: ${payload['token']}`,
+                "Content-Type":"application/json"
+                
+            }
+            console.log(newTask)
             axios.post(backPath,newTask,{
                 headers:headers
             });
-            state.tasks.unshift(newTask);
+            context.commit('pushToTasks',newTask);
         },
-
-        
     }
 }
