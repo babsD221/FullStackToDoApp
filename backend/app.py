@@ -13,8 +13,6 @@ from functools import wraps
 
 from decorator import crossdomain
 import jwt
-
-
 load_dotenv('./.flaskenv')
 
 app = Flask(__name__)
@@ -99,24 +97,6 @@ def tasks():
     print(f' id header{id_headers}')
     print(id)
     tasks = models.Task.query.filter(models.Task.creator_id==int(id_headers)).all()
-    print(tasks)
-    return jsonify(tasks)
-
-@app.route('/completed_tasks',methods=['GET',])
-def completedTasks():
-    id_headers = request.headers.get("User_Id",'')
-    print(f' id header{id_headers}')
-    print(id)
-    tasks = models.Task.query.filter( models.Task.completed==True).all()
-    print(tasks)
-    return jsonify(tasks)
-
-@app.route('/activeTasks',methods=['GET',])
-def activeTasks():
-    id_headers = request.headers.get("User_Id",'')
-    print(f' id header{id_headers}')
-    print(id)
-    tasks = models.Task.query.filter( models.Task.completed==False).all()
     print(tasks)
     return jsonify(tasks)
 
