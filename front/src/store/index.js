@@ -12,7 +12,7 @@ const store = createStore({
   },
   actions: {
     getTasks(context) {
-      const backPath = "http://127.0.0.1:5050/";
+      const backPath = "/";
       const headers = {
           Authorization: `Bearer: ${localStorage.getItem('token')}`,
           "Content-Type":"application/json",

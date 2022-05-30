@@ -12,10 +12,10 @@ export default {
     Task
     },
 
-/*     created() {
+    created() {
         this.$store.commit('tasksList/removeAllTasks');
         this.getTasks();
-    }, */
+    },
     computed: {
         tasks: function() {
             return this.$store.getters['tasksList/tasks'];

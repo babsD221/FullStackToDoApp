@@ -1,6 +1,8 @@
 import { authService } from './../../api';
 
 export function isValidJwt (jwt) {
+    console.log("in verification");
+    console.log(jwt);
     if (!jwt || jwt.split('.').length < 3) {
       return false;
     }
@@ -14,13 +16,14 @@ export default {
 
     state() {
         return {
+            isAuthenticated:false
         };
 
     },
     actions: {
 
         signup(context, payload) {
-            let url = "http://127.0.0.1:5050/register";
+            let url = "/register";
 
             const autData = JSON.stringify(payload);
             authService.post(url,autData).then(response => {
@@ -39,14 +42,16 @@ export default {
                 console.log(response);
                 context.commit('setJwtToken',response.data['token']);
                 context.commit('setUserData',response.data['id']);
-                        });
+                context.commit('setIsAuthenticate');
+                });
         },
         logout(context) {
             let url = "/logout";
 
             let data  = {};
             authService.post(url,data).then(response =>{
-                context.commit('setJwtToken',response.data['token']);
+            context.commit('setJwtToken',response.data['token']);
+            context.commit('setIsAuthenticate');
         });
             
         }
@@ -56,8 +61,17 @@ export default {
         setUserData(state,payload) {
             localStorage.userId = payload
         },
+        setIsAuthenticate(state) {
+            if(isValidJwt(localStorage.getItem('token'))) {
+                state.isAuthenticated = true; 
+                return;
+            }
+            state.isAuthenticated = false;
+            
+        },
         setJwtToken (state, payload) {
-            localStorage.token = payload            
+            localStorage.token = payload  
+            console.log(localStorage.getItem('token')) ;         
         },
 
     },
@@ -68,8 +82,9 @@ export default {
           token(state) {
             return state.token;
           },
-          isAuthenticated() {
-            return isValidJwt(localStorage.getItem('token'));
+          isAuthenticated(state) {
+              console.log(state);
+            return state.isAuthenticated;
           }
     }
 }
