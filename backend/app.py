@@ -36,11 +36,11 @@ configuration = {
 
 }
 CORS(app,ressources={
-    r"/*": {'origins':'http://localhost:8080'}},supports_credentials=True)
+    r"/*": {'origins':'*'}},supports_credentials=True)
 
 
 if __name__ ==  '__main__':
-    app.run(port=5050)
+    app.run()
 
 database = SQLAlchemy(app)
 
@@ -49,7 +49,6 @@ import models
 @app.before_first_request
 def create_tables():
     database.create_all()
-
 
 
 
@@ -89,6 +88,7 @@ def token_required(f):
             return jsonify(invalid_msg), 401
 
     return _verify
+
 
 
 @app.route('/',methods=['GET',])
@@ -133,7 +133,9 @@ def remove_task(current_user):
 @token_required
 def complete_task(current_user):
     receivedData = request.get_json()
+    print(receivedData['id'])
     task = models.Task.query.filter_by(id=int(receivedData['id'])).first_or_404()
+    print(task.description)
     task.completed= True
     database.session.commit()
     return jsonify({})
