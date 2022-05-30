@@ -49,13 +49,7 @@ export default {
     },
     methods: {
         submitForm() {
-            console.log("Form submitted");
-            console.log(this.email.includes('@'));
-            console.log(this.email);
-            console.log(this.mode);
-            console.log(this.password.length <6);
             if(this.email ==='' || !this.email.includes('@') || this.password.length <6) {
-                console.log("Form failed");
                 this.formIsValid = false;
                 return;
             }
@@ -70,8 +64,10 @@ export default {
                 }
             else {
                     this.$store.dispatch("authentication/authenticate",payload);
+
                 }
-                this.$router.replace('/tasks');
+                this.$router.push('/tasks');
+
             }
             catch(err) {
                 this.error =err.message

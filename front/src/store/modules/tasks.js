@@ -1,4 +1,5 @@
-import axios from 'axios'
+/* import axios from 'axios'
+ */import { authService } from './../../api';
 export default {
     namespaced:true,
     state() {
@@ -20,20 +21,18 @@ export default {
             state.tasks.unshift(newTask);
         },
         setTasks(state,data){
-            state.tasks = data;
+            state.tasks = data.reverse();
         },
         setCompletedTasks(state,data){
             state.completeTasks = data;
         },
         removeAllTasks(state) {
-            state.tasks =[]
+            state.tasks = []
         },
         
         removeTask(state,payload) {
-            const path = "http://127.0.0.1:5050/remove";
+            const path = "/remove";
             const taskIndex = state.tasks.findIndex(task => task.id === payload['id']);
-            console.log(payload['id']);
-            console.log(taskIndex);
             state.tasks.splice(taskIndex, 1);
 
             const headers = {
@@ -43,9 +42,8 @@ export default {
             }
             const data = {
                 'id': payload['id'],
-                'user_id':payload['user_id']
             };
-            axios.post(path,data,{
+            authService.post(path,data,{
                 headers:headers
             });
             
@@ -58,7 +56,7 @@ export default {
                 completed:true,
                 id:payload['id']
             }
-            const path = "http://127.0.0.1:5050/complete";
+            const path = "complete";
             const headers = {
                 Authorization: `Bearer: ${payload['token']}`,
                 "Content-Type":"application/json"
@@ -67,7 +65,7 @@ export default {
             const data = {
                 id: payload['id']
             };
-            axios.post(path,data,{
+            authService.post(path,data,{
                 headers:headers
             });
         }
@@ -76,21 +74,22 @@ export default {
     actions: {
         addTask(context,payload) {
 
-            const backPath = "http://127.0.0.1:5050/create";
+            const backPath = "/create";
             const newTask = {
                 description: payload['description'],
-                completed:payload['completed']
+                completed:payload['completed'],
+                id: payload['id']
             };
+            context.commit('pushToTasks',newTask);
+      
             const headers = {
                 Authorization: `Bearer: ${payload['token']}`,
                 "Content-Type":"application/json"
                 
             }
-            console.log(newTask)
-            axios.post(backPath,newTask,{
+            authService.post(backPath,newTask,{
                 headers:headers
             });
-            context.commit('pushToTasks',newTask);
-        },
+        }
     }
 }

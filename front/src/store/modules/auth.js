@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { authService } from './../../api';
 
 export function isValidJwt (jwt) {
     if (!jwt || jwt.split('.').length < 3) {
@@ -14,64 +14,39 @@ export default {
 
     state() {
         return {
-            userId: null,
-            token: null,
-            user: {},
-            jwt: '',
         };
 
     },
     actions: {
 
         signup(context, payload) {
-            console.log("In auth");
             let url = "http://127.0.0.1:5050/register";
-            const headers = {
-                'Content-type':'application/json',
-                'Accept': 'application/json',
-                
-            }
+
             const autData = JSON.stringify(payload);
-            console.log(autData);
-            axios.post(url,autData,{
-                headers:headers
-            }).then(response => {
+            authService.post(url,autData).then(response => {
                 console.log(response);
             }).catch((err) => {
                 console.log(err)
             });
             context.commit('setUserData',{payload})
         },
-        async authenticate(context, payload) {
+        authenticate(context, payload) {
 
-            let url = "http://127.0.0.1:5050/login";
-            const headers = {
-                'Content-type':'application/json',
-                'Accept': 'application/json',
-                
-            };
+            let url = "/login";
+
             const data = JSON.stringify(payload);
-            await axios.post(url,data,{
-                headers:headers
-            }).then(response => {
+            authService.post(url,data).then(response => {
                 console.log(response);
                 context.commit('setJwtToken',response.data['token']);
                 context.commit('setUserData',response.data['id']);
                         });
         },
         logout(context) {
-            let url = "http://127.0.0.1:5050/logout";
-            const headers = {
-                'Content-type':'application/json',
-                'Accept': 'application/json',    
-            };
-            let data  = {};
-            axios.post(url,data,{
-                headers:headers
-            }).then(response =>{
-                console.log(response.data['token']);
-                context.commit('setJwtToken',response.data['token']);
+            let url = "/logout";
 
+            let data  = {};
+            authService.post(url,data).then(response =>{
+                context.commit('setJwtToken',response.data['token']);
         });
             
         }
@@ -79,14 +54,10 @@ export default {
     },
     mutations: {
         setUserData(state,payload) {
-            state.userId = payload;
-            console.log(state.userId)
+            localStorage.userId = payload
         },
         setJwtToken (state, payload) {
-            localStorage.token = payload
-            state.token = payload;
-            console.log(payload);
-
+            localStorage.token = payload            
         },
 
     },
@@ -97,11 +68,8 @@ export default {
           token(state) {
             return state.token;
           },
-          isAuthenticated(state) {
-            return isValidJwt(state.token)
-          },
-          jwt(state) {
-              return state.jwt;
+          isAuthenticated() {
+            return isValidJwt(localStorage.getItem('token'));
           }
     }
 }

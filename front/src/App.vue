@@ -1,24 +1,17 @@
 <template>
   <Header></Header>
-<!--   <UserAuth></UserAuth>
- -->  <router-view></router-view>
-<!--   <ToDos ></ToDos>
- -->
+  <router-view></router-view>
+
 </template>
 
 <script>
-import Header from './components/Header.vue'
-/* import UserAuth from './components/UserAuth.vue';
- */export default {
+import Header from './components/Header.vue';
+
+export default {
   name: 'App',
   components: {
     Header
 },
-data() {
- return {
-
- };
-}
 }
 </script>
 

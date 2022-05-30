@@ -6,30 +6,28 @@
 
 <script>
 import Task from './Task.vue'
-/* import axios from 'axios'
- */
 export default {
-  name: 'App',
+  name: 'StoredTasks',
   components: {
     Task
     },
-    data() {
-        return {
-            token: this.$store.getters['authentication/token']
-        }
-    },
+
+/*     created() {
+        this.$store.commit('tasksList/removeAllTasks');
+        this.getTasks();
+    }, */
     computed: {
         tasks: function() {
-            console.log(this.$store.getters['tasksList/tasks']);
             return this.$store.getters['tasksList/tasks'];
-        },
-
-         
+        }         
     },
-    mounted() {
+    methods: {
+        getTasks() {
+            this.$store.dispatch('getTasks')
+            setTimeout(() => this.$store.dispatch('getTasks'), 300);
+        }
     }
 }
-
 </script>
 
 <style scoped>

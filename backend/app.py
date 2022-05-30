@@ -58,7 +58,7 @@ def token_required(f):
     def _verify(*args, **kwargs):
         print("Verification")
         auth_headers = request.headers.get('Authorization', '').split()
-        print(request.headers)
+        print(f'request headers {request.headers}')
 
         invalid_msg = {
             'message': 'Invalid token. Registeration and / or authentication required',
@@ -115,12 +115,13 @@ def create_task(current_user):
     print(tasks)
     return jsonify(newTask.to_dict())
 
-@app.route('/remove',methods=['POST',])
+@app.route('/remove',methods=['POST','OPTIONS'])
 @crossdomain(origin='*')
 @token_required
 def remove_task(current_user):
     receivedData = request.get_json()
-    task = models.Task.query.filter_by(id=receivedData['id']).first_or_404()
+    print(f'reçu {receivedData}')
+    task = models.Task.query.filter_by(id=int(receivedData['id'])).first_or_404()
 
     database.session.delete(task)
     database.session.commit()
@@ -132,7 +133,7 @@ def remove_task(current_user):
 @token_required
 def complete_task(current_user):
     receivedData = request.get_json()
-    task = models.Task.query.filter_by(id=receivedData['id']).first_or_404()
+    task = models.Task.query.filter_by(id=int(receivedData['id'])).first_or_404()
     task.completed= True
     database.session.commit()
     return jsonify({})

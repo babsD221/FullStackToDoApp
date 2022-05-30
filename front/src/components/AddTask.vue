@@ -1,6 +1,6 @@
 <template>
     <base-card>
-        <form @submit.prevent="submitTask(this.$refs.taskInput.value,this.$store.getters['authentication/token'])" action="">
+        <form @submit.prevent="submitTask(this.$refs.taskInput.value)" action="">
             <div class=" flex flex-row justify-between items-center  ">
                 <label class="font-bold block mb-2 text-xl" for="description" >Description</label>
                 <input class="block w-2/3" id="description" name="description" ref="taskInput" type="text">
@@ -14,12 +14,12 @@
 <script>
 export default {
     methods: {
-        submitTask(description,jwt) {
-            console.log(jwt);
+        submitTask(description) {
             const payload = {
+                'id': this.$store.getters['tasksList/tasks'].length,
                 'description': description,
                 'completed': false,
-                'token': jwt
+                'token': localStorage.getItem('token')
             }
             this.$store.dispatch('tasksList/addTask',payload);
         }

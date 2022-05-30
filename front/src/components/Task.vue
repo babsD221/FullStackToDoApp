@@ -2,20 +2,22 @@
 
     <li class="m-auto">
       <base-card>
-        <header class="flex justify-between items-center flex-row">
-        <h3 class="text-xl my-2 mx-0  ">{{ description }}</h3>
-        <div>
-        <base-button @click="completeTask(id,this.$store.getters['authentication/token'])"  mode="flat">
-        <done-icon> </done-icon>
-        </base-button>
+        <div class="flex justify-between  flex-row">
+          <div>
+              <h3 class="text-xl text-left my-2 mx-0  ">{{ description }}</h3>
+          </div>
+          <div class="flex flex-row justify-self-start space-x-0">
+            <base-button @click="completeTask(id)"  mode="flat">
+            <done-icon> </done-icon>
+            </base-button>
 
-        <base-button  @click="removeTask(id,this.$store.getters['authentication/userId'],this.$store.getters['authentication/token'])" mode="flat">
-        <delete-icon class="text-red-700">  </delete-icon>
-        </base-button>
+            <base-button  @click="removeTask(id)" mode="flat">
+            <delete-icon class="text-red-700">  </delete-icon>
+            </base-button>
+          </div>
+
+
         </div>
-
-        </header>
-
       </base-card>
     </li>
 </template>
@@ -25,25 +27,23 @@
 export default {
     name: "MyTask",
     props: ["id","description"],
-        computed :{
-      jwt: function() {
-        return this.$store.getters['auth/jwt'];
+    data() {
+      return {
+
       }
     },
     methods: {
-      removeTask(taskId,user_id,jwt) {
+      removeTask(taskId) {
         const payload = {
           'id': taskId,
-          'user_id':user_id,
-          'token': jwt
+          'token': localStorage.getItem('token')
         }
-        console.log(payload)
         this.$store.commit('tasksList/removeTask',payload);
       },
-       completeTask(taskId,jwt) {
+       completeTask(taskId) {
         const payload = {
           'id': taskId,
-          'token': jwt
+          'token': localStorage.getItem('token')
         }
         this.$store.commit('tasksList/completeTask',payload)
       }

@@ -6,17 +6,10 @@
 
 <script>
 import Task from './Task.vue'
-/* import axios from 'axios'
- */
 export default {
   name: 'CompletedTask',
   components: {
     Task
-    },
-    data() {
-        return {
-            token: this.$store.getters['authentication/token']
-        }
     },
     computed: {
         tasks: function() {

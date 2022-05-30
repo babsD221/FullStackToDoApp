@@ -1,8 +1,9 @@
 import { createStore} from 'vuex';
-import axios from 'axios';
 import TaskModule from './modules/tasks.js'
 import UserAuth from './modules/auth.js'
+import { authService } from './../api';
 
+import router from '../router.js'
 
 const store = createStore({
   modules: {
@@ -13,12 +14,12 @@ const store = createStore({
     getTasks(context) {
       const backPath = "http://127.0.0.1:5050/";
       const headers = {
-          Authorization: `Bearer: ${this.getters[['authentication/token']]}`,
+          Authorization: `Bearer: ${localStorage.getItem('token')}`,
           "Content-Type":"application/json",
-          "User_Id":this.getters['authentication/userId']
+          "User_Id":localStorage.getItem('userId')
           
       }
-      axios.get(backPath,{
+      authService.get(backPath,{
           headers:headers
       })
       .then(res => {
@@ -27,26 +28,12 @@ const store = createStore({
       .catch((err) => {
           console.error(err)
       })
-  },
-  getCompletedTasks(context) {
-    const path = "http://127.0.0.1:5050/completed_tasks";
-    const headers = {
-        Authorization: `Bearer: ${this.getters[['authentication/token']]}`,
-        "Content-Type":"application/json",
-        "User_Id":this.getters['authentication/userId']
-        
-    }
-    axios.get(path,{
-        headers:headers
-    })
-    .then(res => {
-      context.commit('tasksList/setCompletedTasks',res.data);
-      console.log(res.data);
-    })
-    .catch((err) => {
-        console.error(err)
-    })
-},
+    },  
+  logout(context) {
+    context.dispatch('authentication/logout');
+    context.commit('tasksList/removeAllTasks');
+    router.push('/');
+  }
   }
 });
 
