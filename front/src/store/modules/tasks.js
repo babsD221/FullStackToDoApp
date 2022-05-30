@@ -56,7 +56,7 @@ export default {
                 completed:true,
                 id:payload['id']
             }
-            const path = "complete";
+            const path = "/complete";
             const headers = {
                 Authorization: `Bearer: ${payload['token']}`,
                 "Content-Type":"application/json"
@@ -75,13 +75,11 @@ export default {
         addTask(context,payload) {
 
             const backPath = "/create";
-            const newTask = {
+            let newTask = {
                 description: payload['description'],
                 completed:payload['completed'],
-                id: payload['id']
             };
-            context.commit('pushToTasks',newTask);
-      
+            console.log(newTask.id)      
             const headers = {
                 Authorization: `Bearer: ${payload['token']}`,
                 "Content-Type":"application/json"
@@ -89,6 +87,13 @@ export default {
             }
             authService.post(backPath,newTask,{
                 headers:headers
+            }).then(response =>{
+                newTask = {
+                    description: response.data['description'],
+                    completed:response.data['completed'],
+                    id: response.data['id']
+                };
+                context.commit('pushToTasks',newTask);
             });
         }
     }
