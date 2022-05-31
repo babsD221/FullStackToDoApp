@@ -1,18 +1,21 @@
 <template>
     <form  @submit.prevent="submitForm" class="m-4 rounded-xl p-4 flex flex-col" action="">
-        <base-card>
-            <label for="email">E-Mail</label>
+        <div class="flex flex-col justify-between text-center">
+        <base-card class="flex gap-6 text-center  flex-row ">
+            <label class="text-xl" for="email">E-Mail</label>
             <input type="email" id="email" v-model.trim="email">
         </base-card>
-                <base-card>
-            <label for="password">Password</label>
+            <base-card class="flex gap-6 text-center  flex-row ">
+            <label class="text-xl" for="password">Password</label>
             <input type="password" id="password" v-model.trim="password">
         </base-card>
-        <p v-if="!formIsValid"> Please enter a valid email and password</p>
-        <base-card>
+        <p class="text-red-700" v-if="!formIsValid"> Please enter a valid email and password</p>
+        <base-card class="flex gap-1 text-center  flex-row ">
         <base-button type="submit">{{submitButtonCaption}}</base-button>
         <base-button type="button" @click="SwithAuthMode" mode="flat">{{SwitchModeButtonCaption}}</base-button>
         </base-card>
+        </div>
+
 
     </form>
 </template>
@@ -61,12 +64,19 @@ export default {
                 if(this.mode == 'signup') {
 
                     this.$store.dispatch("authentication/signup",payload)
+
+                    this.$router.push('/');
                 }
             else {
                     this.$store.dispatch("authentication/authenticate",payload);
+                    if(!this.$store.getters['authentication/isAuthorized']) {
+                        this.formIsValid = false;
+                        return;
+                    }
+                    this.$router.push('/tasks');
 
                 }
-                this.$router.push('/tasks');
+
 
             }
             catch(err) {

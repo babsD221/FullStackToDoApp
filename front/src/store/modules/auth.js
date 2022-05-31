@@ -1,4 +1,5 @@
 import { authService } from './../../api';
+import router from '../../router.js'
 
 export function isValidJwt (jwt) {
     console.log("in verification");
@@ -16,7 +17,8 @@ export default {
 
     state() {
         return {
-            isAuthenticated:false
+            isAuthenticated:false,
+            isAuthorized: false
         };
 
     },
@@ -32,6 +34,7 @@ export default {
                 console.log(err)
             });
             context.commit('setUserData',{payload})
+            router.push('/');
         },
         authenticate(context, payload) {
 
@@ -40,9 +43,16 @@ export default {
             const data = JSON.stringify(payload);
             authService.post(url,data).then(response => {
                 console.log(response);
-                context.commit('setJwtToken',response.data['token']);
-                context.commit('setUserData',response.data['id']);
-                context.commit('setIsAuthenticate');
+                if('message' in response.data) {
+                    context.commit('setIsAuthorized',false);
+                }
+                else {
+                    context.commit('setIsAuthorized',false);
+                    context.commit('setJwtToken',response.data['token']);
+                    context.commit('setUserData',response.data['id']);
+                    context.commit('setIsAuthenticate');
+                }
+
                 });
         },
         logout(context) {
@@ -73,6 +83,9 @@ export default {
             localStorage.token = payload  
             console.log(localStorage.getItem('token')) ;         
         },
+        setIsAuthorized(state,boolValue) {
+            state.isAuthorized=boolValue;
+        }
 
     },
     getters: {
@@ -85,6 +98,10 @@ export default {
           isAuthenticated(state) {
               console.log(state);
             return state.isAuthenticated;
+          },
+          isAuthorized(state) {
+              return state.isAuthorized;
           }
+          
     }
 }

@@ -14,8 +14,8 @@ authService.interceptors.response.use((response) => {
 }, async (error) => {
   switch (error.response.status) {
     case 401:{
-      alert('Your session expired. Login again');
-      store.dispatch('logout');
+/*       alert('Your session expired. Login again');
+ */      store.dispatch('logout');
       }
       break;
     case 404:
