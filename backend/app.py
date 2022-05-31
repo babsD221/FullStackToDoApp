@@ -168,15 +168,11 @@ def login():
         current_app.config['SECRET_KEY'])
     user.jwt_token = token
     database.session.commit()
-    tokenData = models.Token(jwt_token=token.decode('UTF-8'))
-    database.session.add(tokenData)
-    database.session.commit()
     print(user.id)
     return jsonify({ 'token': token.decode('UTF-8'),'id':user.id })
 
 @app.route("/logout", methods=["POST"])
 def logout():
     response = jsonify({"token": "0"})
-    models.Token.query.delete()
     database.session.commit()
     return response
