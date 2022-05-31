@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 from flask_sqlalchemy import SQLAlchemy
+import re
 
 from config import Config
 
@@ -55,7 +56,6 @@ def create_tables():
 def token_required(f):
     @wraps(f)
     def _verify(*args, **kwargs):
-        print("Verification")
         auth_headers = request.headers.get('Authorization', '').split()
         print(f'request headers {request.headers}')
 
@@ -69,7 +69,6 @@ def token_required(f):
         }
 
         if len(auth_headers) != 2:
-            print("wouté akk gnarr")
             return jsonify(invalid_msg), 401
 
         try:
@@ -96,8 +95,10 @@ def tasks():
     id_headers = request.headers.get("User_Id",'')
     print(f' id header{id_headers}')
     print(id)
-    tasks = models.Task.query.filter(models.Task.creator_id==int(id_headers)).all()
-    print(tasks)
+    regex = '^[0-9]+$'
+    tasks = []
+    if re.search(regex, id_headers):
+        tasks = models.Task.query.filter(models.Task.creator_id==int(id_headers)).all()
     return jsonify(tasks)
 
 @app.route('/create',methods=['POST',])
@@ -169,7 +170,7 @@ def login():
     user.jwt_token = token
     database.session.commit()
     print(user.id)
-    return jsonify({ 'token': token.decode('UTF-8'),'id':user.id })
+    return jsonify({ 'token': token.decode("UTF-8"),'id':user.id })
 
 @app.route("/logout", methods=["POST"])
 def logout():
