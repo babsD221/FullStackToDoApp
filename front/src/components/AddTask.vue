@@ -1,6 +1,6 @@
 <template>
     <base-card>
-        <form @submit.prevent="submitTask(this.$refs.taskInput.value)" action="">
+        <form ref="taskForm" @submit.prevent="submitTask(this.$refs.taskInput.value)" action="">
             <div class=" flex flex-row justify-between items-center  ">
                 <label class="font-bold block mb-2 text-xl" for="description" >Description</label>
                 <input class="block w-2/3" id="description" name="description" ref="taskInput" type="text">
@@ -22,6 +22,7 @@ export default {
                 'token': localStorage.getItem('token')
             }
             this.$store.dispatch('tasksList/addTask',payload);
+            this.$refs.taskForm.reset()
         }
     }
 

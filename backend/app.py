@@ -106,8 +106,6 @@ def tasks():
 def create_task(current_user):
     print("in create tasks")
     receivedData = request.get_json()
-    print(receivedData)
-    print(receivedData)
     newTask = models.Task(description=receivedData['description'],completed=receivedData['completed'])
     newTask.creator = current_user
     database.session.add(newTask)

@@ -9,7 +9,7 @@
             <label class="text-xl" for="password">Password</label>
             <input type="password" id="password" v-model.trim="password">
         </base-card>
-        <p class="text-red-700" v-if="!formIsValid"> Please enter a valid email and password</p>
+        <p class="text-red-700" v-if="!formIsValid || !isAuthorized"> Please enter a valid email and password</p>
         <base-card class="flex gap-1 text-center  flex-row ">
         <base-button type="submit">{{submitButtonCaption}}</base-button>
         <base-button type="button" @click="SwithAuthMode" mode="flat">{{SwitchModeButtonCaption}}</base-button>
@@ -48,6 +48,9 @@ export default {
             else {
                 return 'Login instead';
             }
+        },
+        isAuthorized() {
+            return this.$store.getters['authentication/isDataValid'];
         }
     },
     methods: {
@@ -69,11 +72,6 @@ export default {
                 }
             else {
                     this.$store.dispatch("authentication/authenticate",payload);
-                    if(!this.$store.getters['authentication/isAuthorized']) {
-                        this.formIsValid = false;
-                        return;
-                    }
-                    this.$router.push('/tasks');
 
                 }
 

@@ -18,7 +18,8 @@ export default {
     state() {
         return {
             isAuthenticated:false,
-            isAuthorized: false
+            isAuthorized: false,
+            validData: true,
         };
 
     },
@@ -36,24 +37,25 @@ export default {
             context.commit('setUserData',{payload})
             router.push('/');
         },
-        authenticate(context, payload) {
-
+        async authenticate(context, payload) {
+            console.log("in authenticate");
             let url = "/login";
 
             const data = JSON.stringify(payload);
-            authService.post(url,data).then(response => {
-                console.log(response);
+            const response = await authService.post(url,data);
                 if('message' in response.data) {
                     context.commit('setIsAuthorized',false);
+                    context.commit('setValidData',false);
                 }
                 else {
-                    context.commit('setIsAuthorized',false);
+                    console.log("valid message");
+                    context.commit('setIsAuthorized',true);
+                    console.log(context.getters['isAuthorized']);
                     context.commit('setJwtToken',response.data['token']);
                     context.commit('setUserData',response.data['id']);
                     context.commit('setIsAuthenticate');
+                    router.push('/tasks');
                 }
-
-                });
         },
         logout(context) {
             let url = "/logout";
@@ -85,6 +87,9 @@ export default {
         },
         setIsAuthorized(state,boolValue) {
             state.isAuthorized=boolValue;
+        },
+        setValidData(state,boolValue) {
+            state.validData = boolValue;
         }
 
     },
@@ -101,6 +106,9 @@ export default {
           },
           isAuthorized(state) {
               return state.isAuthorized;
+          },
+          isDataValid(state) {
+              return state.validData;
           }
           
     }
